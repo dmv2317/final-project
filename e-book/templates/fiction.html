@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiction - E-Library</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            color: white;
+            padding: 10px 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            width: 80px; /* Fixed the small size issue */
+            height: auto;
+            background-origin:border-box;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            position: relative;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 50px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: box-shadow 0.3s;
+            font-size: 14px;
+        }
+        .search-bar input:focus {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .search-bar .icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+         /* Navigation */
+         nav {
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav a:hover {
+            background-color: #2f2cdf;
+            color: #fff;
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .category-books {
+            margin: 20px;
+            padding: 20px;
+        }
+        .category-books h2 {
+            margin-bottom: 10px;
+        }
+        .books-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .book {
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .book:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .book img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        /* Add some space at the bottom for the footer */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="E-Library Logo">
+            <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search icon"></i>
+            <input type="text" placeholder="Search for books...">
+        </div>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/about">About</a>
+            <a href="/my-library">My Library</a>
+            <a href="/feedback">Feedback</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="category-books">
+        <h2>Fiction Books</h2>
+        <div class="books-container" id="booksContainer">
+            
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 E-Library. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let books = [
+            { title: "Book 1", author: "Author 1", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 2", author: "Author 2", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 3", author: "Author 3", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 4", author: "Author 4", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 5", author: "Author 5", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 6", author: "Author 6", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 7", author: "Author 7", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 8", author: "Author 8", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 9", author: "Author 9", image: "https://via.placeholder.com/200x150" },
+            { title: "Book 10", author: "Author 10", image: "https://via.placeholder.com/200x150" },
+        ];
+
+        function displayBooks() {
+            const booksContainer = document.getElementById('booksContainer');
+            booksContainer.innerHTML = ''; // Clear the container before adding new books
+
+            books.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.classList.add('book');
+                bookElement.innerHTML = `
+                    <img src="${book.image}" alt="${book.title}">
+                    <h3>${book.title}</h3>
+                    <p>${book.author}</p>
+                `;
+                booksContainer.appendChild(bookElement);
+            });
+        }
+
+        function searchBooks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredBooks = books.filter(book => book.title.toLowerCase().includes(searchTerm));
+
+            // Display the filtered books
+            books = filteredBooks;
+            displayBooks();
+        }
+
+        // Initial display
+        displayBooks();
+    </script>
+</body>
+</html>

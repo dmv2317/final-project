@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #0b132b;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+        }
+        .container h2 {
+            color: #00d9ff;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        input::placeholder {
+            color: #ddd;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #00d9ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #00a6d6; }
+
+        /* Animated Background */
+        .book {
+            position: absolute;
+            width: 100px;
+            height: 120px;
+            background: #ff9a9e;
+            border-radius: 10px;
+            transform: rotate(-20deg);
+            animation: bookSlide 5s infinite linear;
+        }
+        .book:nth-child(2) {
+            left: 20%;
+            animation-duration: 6s;
+            background: #fad0c4;
+        }
+        .book:nth-child(3) {
+            left: 40%;
+            animation-duration: 7s;
+            background: #fbc2eb;
+        }
+        .book:nth-child(4) {
+            left: 60%;
+            animation-duration: 8s;
+            background: #a1c4fd;
+        }
+        .book:nth-child(5) {
+            left: 80%;
+            animation-duration: 9s;
+            background: #c2e9fb;
+        }
+        @keyframes bookSlide {
+            0% { top: -10%; opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="book"></div>
+    <div class="book"></div>
+    <div class="book"></div>
+    <div class="book"></div>
+    <div class="book"></div>
+    <div class="container">
+        <h2>Login</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <p>Don't have an account? <a href="{{ url_for('register') }}" style="color: #00d9ff;">Register</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - E-Library</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Header Section */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+        nav a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav a:hover {
+            background-color: #2f2cdf;
+            color: white;
+        }
+        .library {
+            background-color: white;
+            color: black;
+        }
+
+        /* Library Container */
+        .library-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-in-out;
+        }
+        .library-container h2 {
+            color: #2c3e50;
+        }
+        .book-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .book-item {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 160px;
+        }
+        .book-item img {
+            width: 100px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .book-item p {
+            margin: 10px 0;
+        }
+        .download-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #1a252f;
+        }
+
+        /* Upload Section Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* File Upload Styling */
+        .file-label {
+            display: block;
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 10px;
+        }
+        .file-label:hover {
+            background-color: #e0e0e0;
+        }
+        .file-label input {
+            display: none;
+        }
+
+        /* Upload Button Animation */
+        #upload-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #upload-btn:hover {
+            background-color: #1a252f;
+            transform: scale(1.05);
+        }
+        /* Button color change when file is selected */
+        #upload-btn.active {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="E-Library Logo">
+        </div>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/about">About</a>
+            <a href="#" class="library">My Library</a>
+            <a href="/feedback">Feedback</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Upload Book Section -->
+    <div class="library-container">
+        <h2>Upload a Book</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}  <!-- CSRF Protection -->
+
+            <div>
+                {{ form.book_name.label }} {{ form.book_name(class="form-control") }}
+            </div>
+            <div>
+                {{ form.author.label }} {{ form.author(class="form-control") }}
+            </div>
+            <div>
+                {{ form.category.label }}
+                <select name="category" class="form-control">
+                    {% for value, label in form.category.choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                {{ form.description.label }} {{ form.description(class="form-control") }}
+            </div>
+            <div>
+                <label class="file-label">
+                    Select Book File
+                    {{ form.book(id="book-upload") }}
+                </label>
+                <p id="file-name">No file selected</p>
+            </div>
+            <div>
+                {{ form.submit(id="upload-btn") }}
+            </div>
+        </form>
+    </div>
+
+    <!-- Downloaded Books Section -->
+    <div class="library-container">
+        <h2>Downloaded Books</h2>
+        <div class="book-list">
+            {% if downloaded_books %}
+                {% for book in downloaded_books %}
+                    <div class="book-item">
+                        <img src="/static/images/book-placeholder.png" alt="Book Cover">
+                        <p>{{ book.title }}</p>
+                        <a href="{{ url_for('download', filename=book.filename) }}">
+                            <button class="download-btn">Download</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No downloaded books yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Uploaded Books Section -->
+    <div class="library-container">
+        <h2>Uploaded Books</h2>
+        <div class="book-list">
+            {% if uploaded_books %}
+                {% for book in uploaded_books %}
+                    <div class="book-item">
+                        <img src="/static/images/book-placeholder.png" alt="Book Cover">
+                        <p><strong>{{ book.title }}</strong></p>
+                        <p><strong>Author:</strong> {{ book.author }}</p>
+                        <p><strong>Category:</strong> {{ book.category }}</p>
+                        <a href="{{ url_for('static', filename='uploads/' + book.filename) }}" download>
+                            <button class="download-btn">Download</button>
+                        </a>
+                    </div>
+
+                    
+                {% endfor %}
+            {% else %}
+                <p>No books uploaded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("book-upload").addEventListener("change", function() {
+            let fileName = this.files[0] ? this.files[0].name : "No file selected";
+            document.getElementById("file-name").textContent = fileName;
+            document.getElementById("upload-btn").classList.add("active");
+        });
+    </script>
+</body>
+</html>
